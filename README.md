@@ -39,18 +39,20 @@
 
 6. 这样我们就有了企业ID、应用ID、应用Secret，已经可以发送消息了
 
-      
+7. 最后还要关注一下企业的公众号，打开这个[链接](https://work.weixin.qq.com/wework_admin/frame#profile/wxPlugin)然后扫码关注，这样你就可以收到消息了   
 
-7. 使用pip安装模块, 也可以直接复制粘贴出去，一共才一百多行代码（但是需要安装requests模块）
+      ![image-20210415004752679](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-47-53-405734.png)
+
+8. 使用pip安装模块, 也可以直接复制粘贴出去，一共才一百多行代码（但是需要安装requests模块）
 
       ```python
       pip3  install qywx-app-message
       ```
 
-8. 打开`python`发送一个测试消息，只要你没填错，就可以发消息了
+9. 打开`python`发送一个测试消息，只要你没填错，就可以发消息了
 
       ```python
-from qywx_app_message import *
+      from qywx_app_message import *
       
       ```
 # 企业ID
