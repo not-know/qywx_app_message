@@ -35,6 +35,8 @@ class qywx_app_message:
         self.check = 0
         # 多长时间内重复消息不发送，默认1800s
         self.check_time = 1800
+        # 云函数接收access_token
+        self.access_token = None
 
     def get_access_token(self):
         """获取access_token
@@ -91,8 +93,12 @@ class qywx_app_message:
 
     def _send(self, json=None):
         """发送消息"""
-        # 获取access_token
-        access_token = self.get_access_token()
+        if self.access_token:
+            # 使用云函数接受到的 access_token
+            access_token = self.access_token
+        else:
+            # 获取 access_token
+            access_token = self.get_access_token()
 
         # 消息重复检查是否开启设置
         json.update({"enable_duplicate_check": self.check,
