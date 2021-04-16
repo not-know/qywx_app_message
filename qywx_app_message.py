@@ -327,3 +327,4 @@ if __name__ == "__main__":
         print(json.dumps(r.json(), indent=4, ensure_ascii=False))
         print("\r\n\r\n可以查看官方错误代码：")
         print("https://work.weixin.qq.com/api/doc/90000/90139/90313")
+

@@ -21,14 +21,46 @@
 
 <br/>
 
-## 使用
+## 快速上手
+
++ pip 安装模块
+
+  ```bash
+  pip3  install qywx-app-message
+  ```
+
++ 这里需要知道企业微信的（企业ID、应用ID、应用Secret）
+
+  ```python
+  from qywx_app_message import *
+  
+  
+  # 企业ID
+  corpid = "xxxxxxxxxxxxxxxxxx"
+  # 应用ID
+  agentid = "1000002"
+  # 应用Secret
+  corpsecret = "xxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxx"
+  wxclient = qywx_app_message(corpid, agentid, corpsecret)
+  
+  # 发送消息 
+  wxclient.send_text("aaa")
+  ```
+  
++ 这时你就发现你多了一条消息
+
+![1](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-28-56-362503.gif)
+
+<br/>
+
+## 注册企业微信和关注自己的企业微信
 1. [注册企业微信](https://work.weixin.qq.com/wework_admin/register_wx?from=myhome)
 
-   ![image-20210414224357906](https://image.zhr.red/images/2021/04/14/image-2021-04-14-22-43-58-774745.png)
+   ![image-20210414224357906](https://image.zhr.red/images/2021/04/14/image-2021-04-14-22-43-58-774745.md.png)
 
 2. 注册完成后登录到后台，点击应用管理，创建新应用。也可以直接打开这个链接 => [创建应用](https://work.weixin.qq.com/wework_admin/frame#apps/createApiApp)
 
-      ![image-20210414224657834](https://image.zhr.red/images/2021/04/14/image-2021-04-14-22-46-58-734637.png)
+      ![image-20210414224657834](https://image.zhr.red/images/2021/04/14/image-2021-04-14-22-46-58-734637.md.png)
 
 3. 点击查看
 
@@ -40,7 +72,7 @@
    
 5. 最后打开我的企业最下面，找到企业id   https://work.weixin.qq.com/wework_admin/frame#profile
 
-      ![image-20210414225615724](https://image.zhr.red/images/2021/04/14/image-2021-04-14-22-56-16-620281.png)
+      ![image-20210414225615724](https://image.zhr.red/images/2021/04/14/image-2021-04-14-22-56-16-620281.md.png)
 
       
 
@@ -48,199 +80,215 @@
 
 7. 最后还要关注一下企业的公众号，打开这个[链接](https://work.weixin.qq.com/wework_admin/frame#profile/wxPlugin)然后扫码关注，这样你就可以收到消息了   
 
-      ![image-20210415004752679](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-47-53-405734.png)
-
-8. 使用pip安装模块, 也可以直接复制粘贴出去，一共才一百多行代码（但是需要安装requests模块）
-
-      ```python
-      pip3  install qywx-app-message
-      ```
-
-9. 打开`python`发送一个测试消息，只要你没填错，就可以发消息了
-
-      ```python
-      from qywx_app_message import *
-      
-      
-      # 企业ID
-      corpid = "xxxxxxxxxxxxxxxxxx"
-      # 应用ID
-      agentid = "1000002"
-      # 应用Secret
-      corpsecret = "xxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxx"
-      wxclient = qywx_app_message(corpid, agentid, corpsecret)
-
-      wxclient.send_text("测试消息")
-      ```
+      ![image-20210415004752679](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-47-53-405734.png)   
 
 
-9. 这时你就发现你多了一条消息
+   
 
-      ![1](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-28-56-362503.gif)
+### 还可以发多种类型的消息，下面是示例
 
-      
++ 文本
 
-      
+  ![image-20210415003241462](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-32-42-151542.png)
 
-      ### 还可以发多种类型的消息，下面是示例
++ 卡片
 
-      + 文本
+  ![image-20210415003317372](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-33-57-828130.png)
 
-        ![image-20210415003241462](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-32-42-151542.png)
++ 图文（图文支持1-8条，这个是四条的。第一条是大图，后面都是小图）
 
-      + 卡片
+  ![image-20210415003351480](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-33-52-198897.png)
 
-        ![image-20210415003317372](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-33-57-828130.png)
++ markdown（目前只支持企业微信端的，微信上看不了）
 
-      + 图文（图文支持1-8条，这个是四条的。第一条是大图，后面都是小图）
+  ![image-20210415003531290](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-35-31-977325.png)
 
-        ![image-20210415003351480](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-33-52-198897.png)
+  ![image-20210415003629682](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-36-30-517140.md.png)
 
-      + markdown（目前只支持企业微信端的，微信上看不了）
+<br/>
 
-        ![image-20210415003531290](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-35-31-977325.png)
+## 发送范围（用户、部门、标签）
 
-        ![image-20210415003629682](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-36-30-517140.png)
++ 默认是发给应用所有可见人，如果需要发送指定范围的话，可以根据用户、部门、标签来指定发送范围
 
-      <br/><br/>
+```
+# 必须是可遍历类型，一个元素也要加列表或元组里这样
+user = ["lisi", "zhangsan"]
+party = ["1", "2", "3"]
+tag = ["1", "2", "3"]
 
-      ## [示例响应的代码](test.py)
+wxclient.send_range(user=user, party=party, tag=tag)
+```
 
-      **指定发送范围（用户、部门、标签）和消息重复检查也是有的，可以看下面示例**
-      
-      ```python
-      from qywx_app_message import *
-      
-      
-      # 企业id，在这里获取 https://work.weixin.qq.com/wework_admin/frame#profile 最下面的企业ID就是
-      corpid = ""
-      # 在应用管理最下面新建应用
-      # 创建好后打开引用界面，agentid就是
-      agentid = ""
-      # 点击 Secret的查看
-      # 在点击 发送Secret到企业微信中查看，然后在企业微信中查看
-      corpsecret = ""
-      
-      
-      # 生成实例
-      wxclient = qywx_app_message(corpid, agentid, corpsecret)
-      
-      
-      # 实例化后，可以设置是否开启检查重复消息，
-      # 在一定时间内重复的消息将不再发送
-      # 0：关闭， 1：开启    默认0
-      wxclient.check = 0
-      # 多长时间内重复消息不发送，默认1800s
-      wxclient.check_time = 1800
-      
-      
-      # 设置发送的范围，用户（user）、部门（party）、标签（tag）
-      # 需要是可遍历的对象，列表元组之类的
-      # 不设置的话是发给应用的所有可见人
-      wxclient.send_range(user=["test"])
-      # print(wxclient.data)
-      
-      
-      # 发送文本消息，
-      # 第一个是企业应用id，在应用管理，找到想要发消息的应用
-      text = """cs上线提醒，赶紧去看看吧
-      
-      ip地址:          127.0.0.1
-      计算机名:      DESKTOP-XXXXXXX
-      用户名:          administrator
-      """
-      r = wxclient.send_text(text)
-      
-      
-      # 发送卡片消息
-      r = wxclient.send_textcard("新抓取到的 CVE 已到达",
-                                 "爬取到的 README.md 内容\r\n此exp相当危险可日天日地日一切\r\n\r\n点击卡片跳转到项目页面", 
-                                 "https://github.com/")
-      
-      
-      # 图文消息最少一条，第一条的图片是大图，官网说 1068*455（差不多21:9） 显示效果会好一点。
-      # 如果只有标题和描述显示的效果卡片消息一样
-      news = [{"title": "xxxxx番更新了", "description": "描述",
-               "url": "https://www.bilibili.com/anime/timeline/", 
-               "picurl": "https://image.zhr.red/images/2021/04/14/image-2021-04-14-18-21-44-108884.md.png"}]
-      
-      # 后面的都是小图，最多支持8条，小图150*150 显示效果会好一点
-      news.append({"title": "xxxxxxxxx", "description": "描述",
-                   "url": "https://www.bilibili.com/anime/timeline/", 
-                   "picurl": "https://image.zhr.red/images/2021/04/14/9b2fadeebea37c5da20ec9215fc4056caee69584.png"})
-      news.append({"title": "xxxxxxxxx", "description": "描述",
-                   "url": "https://www.bilibili.com/anime/timeline/", 
-                   "picurl": "https://image.zhr.red/images/2021/04/14/9b2fadeebea37c5da20ec9215fc4056caee69584.png"})
-      news.append({"title": "xxxxxxxxx", "description": "描述",
-                   "url": "https://www.bilibili.com/anime/timeline/", 
-                   "picurl": "https://image.zhr.red/images/2021/04/14/9b2fadeebea37c5da20ec9215fc4056caee69584.png"})
-      
-      # 发送图文消息
-      r = wxclient.send_news(news)
-      
-      
-      # markdown 文本
-      markdown = """
-      # 一级标题
-      ## 二级标题
-      ### 三级标题
-      #### 四级标题
-      ##### 五级标题
-      ###### 六级标题
-      
-      ## 特殊字体
-      *斜体*              
-      **粗体**            __粗体__
-      ***加粗斜体***      ___加粗斜体___
-      ~~删除线~~
-      ## 缩进
-      + 缩进
-        + 层级缩进（记得+之间有空格） 
-          + 多层
-      ## 引用
-      > 引用
-      
-      ## 链接
-      [链接](https://www.baidu.com)
-      
-      ## 无序文本
-      - 文本1
-      - 文本2
-      - 文本3
-      ## 有序文本
-      1. 文本1
-      2. 文本2
-      3. 文本3
-      ## 代码
-      ​```python
-      while
-          print("无限起飞")
-      ​```
-      `代码片段`
-      
-      ## 颜色
-      <font color="info">绿色</font>
-      <font color="comment">灰色</font>
-      <font color="warning">橙红色</font>
-      """
-      # 发送 markdown 消息
-      r = wxclient.send_markdown(markdown)
-      
-      # 有什么问题可以直接看响应，返回的就是requests模块的响应
-      if r.json()["errmsg"] != "ok":
-          print(json.dumps(r.json(), indent=4, ensure_ascii=False))
-          print("\r\n\r\n可以查看官方错误代码：")
-          print("https://work.weixin.qq.com/api/doc/90000/90139/90313")
-      ```
-      
-      <br/><br/>
-      
-      ## cs的插件示例  -还在研究
-    
-      <br/><br/>
-      
-      ## cve推送示例   -还在研究
-    
-      <br/><br/>
-      ## 微信   欢迎大佬来指导，嘤嘤嘤
-      ![image-20210415011447889](https://image.zhr.red/images/2021/04/14/image-2021-04-15-01-14-48-599780.png)
++ 打开[通讯录](https://work.weixin.qq.com/wework_admin/frame#contacts)
+
++ 找到相应的用户点击编辑,账号这里就是用户ID
+
+  ![image-20210416112639866](https://image.zhr.red/images/2021/04/15/image-2021-04-16-11-26-40-794365.md.png)
+
++ 部门ID，相应的部门的三个点里找到部门ID 
+
+  ![image-20210416120017783](https://image.zhr.red/images/2021/04/16/image-2021-04-16-12-00-18-327338.png)
+
++ 标签ID,  标签详情里可以找到标签id
+
+  ![image-20210416120227926](https://image.zhr.red/images/2021/04/16/image-2021-04-16-12-02-28-471264.png)
+
+  ![image-20210416120336300](https://image.zhr.red/images/2021/04/16/image-2021-04-16-12-03-36-822945.png)
+
+<br/>
+
+##  重复消息检查
+
+```
+# 开启检查重复消息，在一定时间内重复的消息将不再发送
+# 0：关闭， 1：开启    默认0
+wxclient.check = 1
+# 多长时间内重复消息不发送，默认1800s
+wxclient.check_time = 1800
+```
+
+
+
+<br/>
+
+## [示例响应的代码](test.py)
+
+
+
+```python
+from qywx_app_message import *
+
+
+# 企业id，在这里获取 https://work.weixin.qq.com/wework_admin/frame#profile 最下面的企业ID就是
+corpid = ""
+# 在应用管理最下面新建应用
+# 创建好后打开引用界面，agentid就是
+agentid = ""
+# 点击 Secret的查看
+# 在点击 发送Secret到企业微信中查看，然后在企业微信中查看
+corpsecret = ""
+
+
+# 生成实例
+wxclient = qywx_app_message(corpid, agentid, corpsecret)
+
+
+# 实例化后，可以设置是否开启检查重复消息，
+# 在一定时间内重复的消息将不再发送
+# 0：关闭， 1：开启    默认0
+wxclient.check = 0
+# 多长时间内重复消息不发送，默认1800s
+wxclient.check_time = 1800
+
+
+# 设置发送的范围，用户（user）、部门（party）、标签（tag）
+# 需要是可遍历的对象，列表元组之类的
+# 不设置的话是发给应用的所有可见人
+wxclient.send_range(user=["test"])
+# print(wxclient.data)
+
+
+# 发送文本消息，
+# 第一个是企业应用id，在应用管理，找到想要发消息的应用
+text = """cs上线提醒，赶紧去看看吧
+
+ip地址:          127.0.0.1
+计算机名:      DESKTOP-XXXXXXX
+用户名:          administrator
+"""
+r = wxclient.send_text(text)
+
+
+# 发送卡片消息
+r = wxclient.send_textcard("新抓取到的 CVE 已到达",
+                           "爬取到的 README.md 内容\r\n此exp相当危险可日天日地日一切\r\n\r\n点击卡片跳转到项目页面", 
+                           "https://github.com/")
+
+
+# 图文消息最少一条，第一条的图片是大图，官网说 1068*455（差不多21:9） 显示效果会好一点。
+# 如果只有标题和描述显示的效果卡片消息一样
+news = [{"title": "xxxxx番更新了", "description": "描述",
+         "url": "https://www.bilibili.com/anime/timeline/", 
+         "picurl": "https://image.zhr.red/images/2021/04/14/image-2021-04-14-18-21-44-108884.md.png"}]
+
+# 后面的都是小图，最多支持8条，小图150*150 显示效果会好一点
+news.append({"title": "xxxxxxxxx", "description": "描述",
+             "url": "https://www.bilibili.com/anime/timeline/", 
+             "picurl": "https://image.zhr.red/images/2021/04/14/9b2fadeebea37c5da20ec9215fc4056caee69584.png"})
+news.append({"title": "xxxxxxxxx", "description": "描述",
+             "url": "https://www.bilibili.com/anime/timeline/", 
+             "picurl": "https://image.zhr.red/images/2021/04/14/9b2fadeebea37c5da20ec9215fc4056caee69584.png"})
+news.append({"title": "xxxxxxxxx", "description": "描述",
+             "url": "https://www.bilibili.com/anime/timeline/", 
+             "picurl": "https://image.zhr.red/images/2021/04/14/9b2fadeebea37c5da20ec9215fc4056caee69584.png"})
+
+# 发送图文消息
+r = wxclient.send_news(news)
+
+
+# markdown 文本
+markdown = """
+# 一级标题
+## 二级标题
+### 三级标题
+#### 四级标题
+##### 五级标题
+###### 六级标题
+
+## 特殊字体
+*斜体*              
+**粗体**            __粗体__
+***加粗斜体***      ___加粗斜体___
+~~删除线~~
+## 缩进
++ 缩进
+  + 层级缩进（记得+之间有空格） 
+    + 多层
+## 引用
+> 引用
+
+## 链接
+[链接](https://www.baidu.com)
+
+## 无序文本
+- 文本1
+- 文本2
+- 文本3
+## 有序文本
+1. 文本1
+2. 文本2
+3. 文本3
+## 代码
+​```python
+while
+    print("无限起飞")
+​```
+`代码片段`
+
+## 颜色
+<font color="info">绿色</font>
+<font color="comment">灰色</font>
+<font color="warning">橙红色</font>
+"""
+# 发送 markdown 消息
+r = wxclient.send_markdown(markdown)
+
+# 有什么问题可以直接看响应，返回的就是requests模块的响应
+if r.json()["errmsg"] != "ok":
+    print(json.dumps(r.json(), indent=4, ensure_ascii=False))
+    print("\r\n\r\n可以查看官方错误代码：")
+    print("https://work.weixin.qq.com/api/doc/90000/90139/90313")
+```
+
+<br/><br/>
+
+## cs的插件示例  -还在研究
+
+<br/><br/>
+
+## cve推送示例   -还在研究
+
+<br/><br/>
+## 微信   欢迎大佬来指导，嘤嘤嘤
+  ![image-20210415011447889](https://image.zhr.red/images/2021/04/14/image-2021-04-15-01-14-48-599780.png)
