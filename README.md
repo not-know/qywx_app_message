@@ -1,6 +1,6 @@
-<h1 align="center"> qywx_app_message </h1>
+<h1 align="center"> 🌟qywx_app_message🌟 </h1>
 
-
+[![PyPI pyversions](https://badgen.net/pypi/python/black/)](https://pypi.python.org/pypi/ansicolortags/)&nbsp;&nbsp; [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/ansicolortags/)&nbsp;&nbsp;[![GitHub stars](https://img.shields.io/github/stars/not-know/qywx_app_message)](https://github.com/not-know/qywx_app_message/stargazers)
 <br/>
 
 ## 说明
@@ -21,7 +21,7 @@
 
 <br/>
 
-## 快速上手
+## 快速上手🌟
 
 + pip 安装模块
 
@@ -83,7 +83,7 @@
       ![image-20210415004752679](https://image.zhr.red/images/2021/04/14/image-2021-04-15-00-47-53-405734.png)   
 
 
-   
+
 
 ## 还可以发多种类型的消息，下面是示例
 
@@ -292,3 +292,5 @@ if r.json()["errmsg"] != "ok":
 <br/><br/>
 ## 微信   欢迎大佬来指导，嘤嘤嘤
   ![image-20210415011447889](https://image.zhr.red/images/2021/04/14/image-2021-04-15-01-14-48-599780.png)
+
+\## Stargazers over time [![Stargazers over time](https://starchart.cc/not-know/qywx_app_message.svg)](https://starchart.cc/not-know/qywx_app_message)      
