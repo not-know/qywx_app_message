@@ -70,7 +70,7 @@ sub dia{
 	drow_text($dialog, 'sec', "Secret:");
 	
 	# 推送范围
-	drow_text_big($dialog, "shili", "实   例:");
+	drow_text_big($dialog, "shili", "示   例:");
 	drow_text($dialog, "uid", "用户ID:");
 	drow_text($dialog, "pid", "部门ID:");
 	drow_text($dialog, "tag", "标签ID:");
@@ -166,9 +166,9 @@ sub send_text {
 		$url = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=".$access_token;
 		# println($url);
 		$json = "{\"touser\": \"$touser $+ \", \"toparty\": \"$toparty $+ \", \"totag\": \"totag $+ \", \"agentid\": $agentid $+ , \"msgtype\": \"text\", \"text\" : {\"content\" :\"$1 $+ \"}, \"enable_duplicate_check\": $check , \"duplicate_check_interval\": $checktime }";
-		println($json);
+		#println($json);
 		$result = http_post($url, $json);
-		println($result);
+		#println($result);
 	}	
 }
 
@@ -202,7 +202,7 @@ menubar("企业微信推送", "qywx");
 popup qywx {
 	item("发送测试消息", { test() });
 	item("修改配置文件", { dia() });
-	item("如何注册企业", { url_open("https://github.com/not-know/qywx_app_message#%E6%B3%A8%E5%86%8C%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E5%92%8C%E5%85%B3%E6%B3%A8%E8%87%AA%E5%B7%B1%E7%9A%84%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1"); });
+	item("如何注册企业微信", { url_open("https://github.com/not-know/qywx_app_message#%E6%B3%A8%E5%86%8C%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E5%92%8C%E5%85%B3%E6%B3%A8%E8%87%AA%E5%B7%B1%E7%9A%84%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1"); });
 	item("如何获得用户部门标签ID", { url_open("https://github.com/not-know/qywx_app_message#%E5%8F%91%E9%80%81%E8%8C%83%E5%9B%B4%E7%94%A8%E6%88%B7%E9%83%A8%E9%97%A8%E6%A0%87%E7%AD%BE"); });
 	item("关于", { url_open("https://github.com/not-know/qywx_app_message"); });
 }
