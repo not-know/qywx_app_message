@@ -1,4 +1,5 @@
 import requests
+import base64
 import json
 import re
 
@@ -140,7 +141,7 @@ class qywx_app_message:
             desc：      描述，不超过512个字节，超过会自动截断
             url：       点击后跳转的链接。最长2048字节，请确保包含了协议头(http/https)
             btntxt：    按钮文字。 默认为“详情”， 不超过4个文字，超过自动截断。非必须
-            
+
         官网字体颜色说明
         特殊说明：
         卡片消息的展现形式非常灵活，支持使用br标签或者空格来进行换行处理，
@@ -222,6 +223,183 @@ class qywx_app_message:
 
         r = self._send(data)
         return r
+
+
+class ipquery:
+
+    def __init__(self, ip, api_key, size, email, key) -> None:
+        """ 查看IP的一些开源情报, 主要用于cs推送
+
+        微步IP信誉接口查应用场景和标签
+        https://x.threatbook.cn/v5/apiDocs
+
+        fofa api 查开放端口
+        https://fofa.so/static_pages/api_help
+
+        ApiTools 查IP位置和运营商
+        https://api.devopsclub.cn/docs/ipv4query
+        """
+
+        self.api_key = api_key
+        self.email = email
+        self.size = size
+        self.key = key
+        self.ip = ip
+        self.isp = ""
+        self.port = ""
+        self.scene = ""
+        self.location = ""
+        self.tag_original = ""
+
+        if api_key:
+            self.ip_reputation()
+        if key:
+            self.fofa()
+        self.ipv4query()
+
+    def ip_reputation(self):
+        """微步查标签， 每天可查50次， 主要是查应用场景"""
+
+        url = 'https://api.threatbook.cn/v3/scene/ip_reputation'
+        params = {
+            "apikey": self.api_key,
+            "resource": self.ip
+        }
+        r = requests.request("GET", url, params=params).json()
+
+        # 如果响应错误结束函数， upper()转换为大写， 把请求返回去
+        if r["verbose_msg"].upper() != "OK":
+            self.wb_error = r
+            return None
+
+        # 应用场景标签的中英转换字典
+        # https://x.threatbook.cn/api_docs#/appendix/scene_classify
+        scene_classify = {
+            "CDN": "CDN",
+            "Hosting": "数据中心",
+            "Residence": "住宅用户",
+            "University": "学校单位",
+            "Unused": "已路由-未使用 ",
+            "Cloud Provider": "云厂商",
+            "Unrouted": "已分配-未路由 ",
+            "Mobile Network": "移动网络",
+            "WLAN": "WLAN 商业WIFI的出口",
+            "Internet Exchange": "交换中心",
+            "Satellite Communication": "卫星通信",
+            "Company": "企业专线 某公司的办公内网，IP地址",
+            "Infrastructure": "基础设施 网络路由器的接口IP",
+            "Institution": "组织机构 拥有自有AS号的非运营商机构",
+            "Special Export": "专用出口 隶属某一IDC，但被二级运营商使用",
+            "Anycast": "Anycast 于特定的互联网任播技术(如Google的8.8.8.8)",
+        }
+
+        # 微步标签的中英转换字典
+        # https://x.threatbook.cn/api_docs#/appendix/threat_type
+        reputation = {
+            "C2": "远控",
+            "Edu": "教育",
+            "Proxy": "代理",
+            "VPN": "VPN代理",
+            "Tor": "Tor代理",
+            "Scanner": "扫描",
+            "Gateway": "网关",
+            "Info": "基础信息",
+            "DDNS": "动态域名",
+            "Spam": "垃圾邮件",
+            "IDC": "IDC服务器",
+            "CDN": "CDN服务器",
+            "DNS": "DNS服务器",
+            "Zombie": "傀儡机",
+            "Hijacked": "劫持",
+            "Phishing": "钓鱼",
+            "Bogon": "保留地址",
+            "VPN In": "VPN入口",
+            "VPN In": "VPN入口",
+            "Botnet": "僵尸网络",
+            "Mobile": "移动基站",
+            "Backbone": "骨干网",
+            "Suspicious": "可疑",
+            "MiningPool": "矿池",
+            "VPN Out": "VPN出口",
+            "VPN Out": "VPN出口",
+            "Malware": "恶意软件",
+            "Exploit": "漏洞利用",
+            "Whitelist": "白名单",
+            "Dynamic IP": "动态IP",
+            "CoinMiner": "私有矿池",
+            "FullBogon": "未启用IP",
+            "BTtracker": "BT服务器",
+            "Advertisement": "广告",
+            "Compromised": "失陷主机",
+            "Brute Force": "暴力破解",
+            "Tor Proxy In": "Tor入口",
+            "Tor Proxy Out": "Tor出口",
+            "Socks Proxy": "Socks代理",
+            "HTTP Proxy": "HTTP Proxy",
+            "HTTP Proxy In": "HTTP代理入口",
+            "Web Login Brute Force": "撞库",
+            "Sinkhole C2": "安全机构接管 C2",
+            "SSH Brute Force": "SSH暴力破解",
+            "FTP Brute Force": "FTP暴力破解",
+            "HTTP Proxy Out": "HTTP代理出口",
+            "Socks Proxy In": "Socks代理入口",
+            "Socks Proxy Out": "Socks代理出口",
+            "SMTP Brute Force": "SMTP暴力破解",
+            "Search Engine Crawler": "搜索引擎爬虫",
+            "Http Brute Force": "HTTP AUTH暴力破解"
+        }
+
+        # 应用场景
+        scene = r['data'][self.ip]['scene']
+        if scene:
+            self.scene = f'应用场景：{scene_classify[scene]}'
+
+        # 微步标签
+        tag_original = r['data'][self.ip]['judgments']
+        if tag_original:
+            tag_original = [reputation[x] for x in tag_original]
+            self.tag_original = f'微步标签：{", ".join(tag_original)}'
+
+    def fofa(self):
+        """用 fofa api查开放端口"""
+
+        qbase64 = base64.b64encode(self.ip.encode()).decode()  # 搜索条件
+        url = f'https://fofa.so/api/v1/search/all'
+        params = {
+            "key": self.key,
+            "size": self.size,
+            "email": self.email,
+            "qbase64": qbase64
+        }
+
+        r = requests.get(url, params=params).json()
+
+        # 发生错误就结束函数， 把请求返回去
+        if r["error"]:
+            self.fofa_error = r
+            return None
+
+        if r['results']:
+            port = [i[-1] for i in r['results']]  # 取端口
+            port = sorted(set(port), key=int)  # 去重 排序
+            self.port = ','.join(port)  # 拼接
+
+    def ipv4query(self):
+        """查IP的地理位置， 微步的是英文的比较麻烦"""
+
+        url = "https://api.devopsclub.cn/api/ipv4query"
+        params = {"ip": self.ip}
+        r = requests.get(url, params=params).json()
+
+        # 查询失败结束函数， 把请求返回去
+        if r["code"]:
+            self.ipv4query_error = r
+            return None
+
+        if r["data"]:
+            location = [r["data"][i] for i in ["country", "province", "city"]]
+            self.isp = "运 营 商：" + r["data"]["isp"]
+            self.location = "地理位置：" + " ".join(location)
 
 
 if __name__ == "__main__":

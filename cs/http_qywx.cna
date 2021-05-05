@@ -1,0 +1,247 @@
+# 修改配置文件
+sub confile {
+	# 判断是否修改
+	if ($2 eq '修改') {
+		# 局部变量
+		local('$handle $file');
+		
+		# 配置文件位置 script_resource 函数显示当前路径并拼接传参
+		$file = script_resource("modules/conf.cna");
+		# 判断文件夹是否存在不存在创建
+		if (!-exists script_resource("modules"))
+		{
+			mkdir(script_resource("modules"));
+		}
+		# 覆盖模式写入配置文件
+		$cfile = openf("> $+ $file");
+		
+		# 写入
+		println($cfile, "# 企业ID");
+		println($cfile, "\$corpid = \' $+ $3['cid'] $+ \';");
+		println($cfile, "# 应用ID");
+		println($cfile, "\$agentid = \' $+ $3['aid'] $+ \';");
+		println($cfile, "# Secret");
+		println($cfile, "\$corpsecret = \' $+ $3['sec'] $+ \';");
+		println($cfile, "\r\n\r\n# 发送范围");
+		println($cfile, "\$touser = \' $+ $3['uid'] $+ \';");
+		println($cfile, "\$toparty = \' $+ $3['pid'] $+ \';");
+		println($cfile, "\$totag = \' $+ $3['tag'] $+ \';");
+		println($cfile, "\r\n\r\n# 重复消息检查");
+		println($cfile, "\$check = \'".int($3['check'])."\';");
+		println($cfile, "\$checktime = \' $+ $3['checktime'] $+ \';");
+		
+		# 关闭文件
+		closef($cfile);
+		
+		# 这样就不用重新加载脚本
+		$corpid = $3['cid'];
+		$agentid = $3['aid'];
+		$corpsecret = $3['sec'];
+		$touser = $3['uid'];
+		$toparty = $3['pid'];
+		$totag = $3['tag'];
+		$check = int($3['check']);
+		$checktime = $3['checktime'];
+	}
+}
+
+# 对话框
+sub dia{
+	# 默认显示文本
+	$shili = "部门和标签为@all时省略该参数 \t推送多个目标用 | 分割， 如：\r\nzhangsan|lisi|wangwu";
+	$defconf = %(uid => '@all', pid => '@all', tag => '@all', shili => $shili, checktime => 1800);
+	if ($touser) {add($defconf, uid => $touser);}
+	if ($toparty) {add($defconf, pid => $toparty);}
+	if ($totag) {add($defconf, tag => $totag);}
+	add($defconf, cid => $corpid);
+	add($defconf, aid => $agentid);
+	add($defconf, sec => $corpsecret);
+	#println($defconf);
+
+	# 创建一个对话框
+	$dialog = dialog("修改企业微信推送配置文件", $defconf, &confile);
+	
+	# 对话框描述
+	dialog_description($dialog, "注册企业微信和用户部门标签ID\r\nhttps://github.com/not-know/qywx_app_message");
+	
+	# 必填项
+	drow_text($dialog, 'cid', "企业ID:");
+	drow_text($dialog, 'aid', "应用ID:");
+	drow_text($dialog, 'sec', "Secret:");
+	
+	# 推送范围
+	drow_text_big($dialog, "shili", "实   例:");
+	drow_text($dialog, "uid", "用户ID:");
+	drow_text($dialog, "pid", "部门ID:");
+	drow_text($dialog, "tag", "标签ID:");
+	
+	# 重复消息检查
+	drow_checkbox($dialog, "check", "", "一定时间内重复消息不推送");
+	drow_text($dialog, "checktime", "时间: ");
+
+	# 按钮
+	dbutton_action($dialog, "修改");
+	dbutton_action($dialog, "取消");
+	
+	# 显示对话框
+	dialog_show($dialog);
+}
+
+# 发送get请求，  不会看不懂直接抄的
+sub http_get {
+	local('$output');
+	$url = [new java.net.URL: $1];
+	$handle = [SleepUtils getIOHandle: [$url openStream], $null];
+	@content = readAll($handle);
+	return @content;
+}
+
+# 发送post请求，  不会看不懂直接抄的
+sub http_post {
+	# 参考
+	# https://forum.90sec.com/t/topic/1620
+	# https://www.cnblogs.com/aeolian/p/7746158.html
+	# https://blog.csdn.net/qq_27870421/article/details/90110773
+	# 官方调用对象，用起来真恶心
+	# 对象表达式包含在方括号内。对象表达式的第一个参数是目标。第二个是信息
+	# http://sleep.dashnine.org/manual/hoes.html 
+	
+	local('$output');
+	$url = [new java.net.URL: $1];
+	# 创建URLConnection实例，用于设置请求参数
+	$conn = [$url openConnection];
+	# 设置请求体
+	# 设置请求为post
+	[$conn setRequestMethod: "POST"];
+	# 有请求体，需要将setDoOutput的参数设为true, 默认false
+	[$conn setDoOutput: true];
+	# 设置请求头长度，让服务器知道接受多少字节
+	[$conn setRequestProperty: "Content-Length", strlen($2)];
+	# 设置类型为json
+	[$conn setRequestProperty: "Content-Type", "application/json"];
+	# 响应写入到此连接的输出流
+	$outStream = [$conn getOutputStream];
+	# 写入请求体
+	[$outStream write: [$2 getBytes]];
+	# sleep 可以将一个任意的InputStream或OutputStream融合到一个I/O句柄中。
+	# http://sleep.dashnine.org/manual/io.html#3
+	$inStream = [$conn getInputStream];
+	$handle = [SleepUtils getIOHandle: $inStream, $outStream];
+	@content = readAll($handle);
+	return @content;
+}
+
+# 获取access_token
+sub get_access_token {
+	local('$access_token');
+	$url = 'https://qyapi.weixin.qq.com//cgi-bin/gettoken?corpid='.$corpid.'&corpsecret='.$corpsecret;
+	$result = http_get($url)[0];
+	# 去掉开头结尾的花括号
+	$result = substr($result, 1, -1);
+	# 解析json
+	foreach $data (split(",", $result)) {
+		# println($data);
+		($key, $ver) = split(":", $data);
+
+		# 判断是否异常
+		if ($key eq '"errmsg"') {
+			if ($ver ne '"ok"') { 
+				show_error("请检查企业ID和secret是否正确"); 
+				dia();
+			}
+		}
+		
+		# 取出access_token
+		if ($key eq '"access_token"') {
+			$access_token = substr($ver, 1, -1);
+			return $access_token;
+		}
+	}
+}
+
+# 推送文本消息
+sub send_text {
+	$access_token = get_access_token();
+	if ($access_token ne "") {
+		$url = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=".$access_token;
+		# println($url);
+		$json = "{\"touser\": \"$touser $+ \", \"toparty\": \"$toparty $+ \", \"totag\": \"totag $+ \", \"agentid\": $agentid $+ , \"msgtype\": \"text\", \"text\" : {\"content\" :\"$1 $+ \"}, \"enable_duplicate_check\": $check , \"duplicate_check_interval\": $checktime }";
+		println($json);
+		$result = http_post($url, $json);
+		println($result);
+	}	
+}
+
+# 测试消息
+sub test {
+	prompt_text("发送的文本", "cs上线提醒消息测试", {send_text($1)});
+}
+
+# 不存在配置文件的话创建默认的配置文件
+if (!-exists script_resource("modules/conf.cna"))
+{
+	show_error("没找到配置文件，请填写企业ID、应用ID、Secret这些必选项"); 
+	dia();
+}
+else
+{
+	# 包含配置文件
+	include(script_resource("modules/conf.cna"));
+	$cerror = "请设置";
+	if ($corpid eq '') { $cerror = $cerror."企业ID、"; }
+	if ($agentid eq '') { $cerror = $cerror."应用ID、"; }
+	if ($corpsecret eq '') { $cerror = $cerror."Secret"; }
+	if ($cerror ne "请设置") {show_error("$cerror"); dia();}
+}
+
+
+# 顶部菜单栏添加选项
+menubar("企业微信推送", "qywx");
+
+# 添加子菜单
+popup qywx {
+	item("发送测试消息", { test() });
+	item("修改配置文件", { dia() });
+	item("如何注册企业", { url_open("https://github.com/not-know/qywx_app_message#%E6%B3%A8%E5%86%8C%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E5%92%8C%E5%85%B3%E6%B3%A8%E8%87%AA%E5%B7%B1%E7%9A%84%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1"); });
+	item("如何获得用户部门标签ID", { url_open("https://github.com/not-know/qywx_app_message#%E5%8F%91%E9%80%81%E8%8C%83%E5%9B%B4%E7%94%A8%E6%88%B7%E9%83%A8%E9%97%A8%E6%A0%87%E7%AD%BE"); });
+	item("关于", { url_open("https://github.com/not-know/qywx_app_message"); });
+}
+
+# 有新的 beacons 会触发
+on beacon_initial {
+
+	# true 代表没有重复的目标
+	$is_repeat = true;
+	# 循环对比所有已有beacon  有没有重复的目标
+	foreach $beacon (beacons()) {
+		# 不检查自己
+		if ($beacon['id'] == beacon_info($1, "id")) {continue;}
+		
+		# 对比已上线的里面有没有外网IP一样的
+		if ($beacon['external'] eq beacon_info($1, "external")) {
+			# 对比内网IP
+			if ($beacon['internal'] eq beacon_info($1, "internal")) {
+				# 对比计算机用户名
+				if ($beacon['user'] eq beacon_info($1, "user")) {
+					# 如果内外网IP、用户名有全一样的，赋值true并结束循环
+					$is_repeat = false;
+					break;
+				}
+			}
+		}
+	}
+
+	# 如果没有重复目标就推送
+	if ($is_repeat){
+
+		# 推送消息的文本
+		$text = "cs上线提醒，赶紧去看看吧\r\n";
+		$text = $text."\r\n外网地址：".beacon_info($1, 'external');
+		$text = $text."\r\n内网地址：".beacon_info($1, 'internal');
+		$text = $text."\r\n用  户  名：".beacon_info($1, 'user');
+		$text = $text."\r\n计算机名：".beacon_info($1, 'computer');
+
+		send_text($text);
+	}
+
+}

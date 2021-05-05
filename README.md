@@ -283,9 +283,15 @@ if r.json()["errmsg"] != "ok":
 
 <br/><br/>
 
-## cs的插件示例  -还在研究
+## cs的插件示例
 
-<br/><br/>
+直接加载脚本就可以了
+
+![image-20210506015110860](https://image.zhr.red/images/2021/05/05/image-2021-05-06-01-51-11-164177.png)
+
+![image-20210506015136859](https://image.zhr.red/images/2021/05/05/image-2021-05-06-01-51-37-1560197db0869a5addcab5.png)
+
+<br/>
 
 ## cve推送示例   -还在研究
 
