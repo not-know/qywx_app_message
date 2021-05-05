@@ -283,19 +283,22 @@ if r.json()["errmsg"] != "ok":
 
 <br/><br/>
 
-## cs的插件示例
+## cs的插件示例✨
 
-直接加载脚本就可以了
+[下载cna](https://github.com/not-know/qywx_app_message/releases)，然后直接加载脚本就可以了，有新的主机上线自动推送到微信
 
 ![image-20210506015110860](https://image.zhr.red/images/2021/05/05/image-2021-05-06-01-51-11-164177.png)
 
 ![image-20210506015136859](https://image.zhr.red/images/2021/05/05/image-2021-05-06-01-51-37-1560197db0869a5addcab5.png)
+
+![image-20210506020517978](https://image.zhr.red/images/2021/05/05/image-2021-05-06-02-05-18-299961.png)
 
 <br/>
 
 ## cve推送示例   -还在研究
 
 <br/><br/>
+
 ## 微信   欢迎大佬来指导，嘤嘤嘤
   ![image-20210415011447889](https://image.zhr.red/images/2021/04/14/image-2021-04-15-01-14-48-599780.png)
 
